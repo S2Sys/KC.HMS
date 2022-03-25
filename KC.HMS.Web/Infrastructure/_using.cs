@@ -1,0 +1,20 @@
+﻿global using KC.HMS.Core;
+global using KC.HMS.Core.Abstracts;
+global using KC.HMS.Core.Contracts;
+global using KC.HMS.Core.Contexts;
+global using KC.HMS.Core.Middlewares;
+global using KC.HMS.Core.Models;
+global using KC.HMS.Services.Contracts;
+global using KC.HMS.Services.Services;
+global using KC.HMS.Web.Infrastructure;
+
+//global using KC.HMS.Web.Infrastructure.Contracts;
+//global using KC.HMS.Web.Infrastructure.Contexts;
+//global using KC.HMS.Web.Infrastructure.Models;
+//global using KC.HMS.Web.Infrastructure.Middlewares;
+global using KC.HMS.Web.Infrastructure.Startups;
+global using KC.HMS.Web.Infrastructure.Services;
+//global using KC.HMS.Web.Infrastructure.ViewModels;
+//global using KC.HMS.Web.Infrastructure.Settings;
+global using KC.HMS.Web.Areas.Administration.Pages;
+global using KC.HMS.Web.Areas.Administration.Pages.Administration;

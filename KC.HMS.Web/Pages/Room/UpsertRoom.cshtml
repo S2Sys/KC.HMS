@@ -1,0 +1,106 @@
+﻿@page
+@model KC.HMS.Web.Pages.Room.UpsertRoomModel
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Edit/Update Rooms";
+
+}
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="container-fluid margin-10">
+    <form class="g-8 navbar p-3" method="post" 
+        autocomplete="off">
+        <div class="row">
+            <div class="col-md-12 s container-fluid">
+                <form asp-page-handler="MasterRooms">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Input.RoomID" />
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+
+                    <div class="row">
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.RoomID" class="control-label"></label>
+                                <input asp-for="Input.RoomID" class="form-control" />
+                                <span asp-validation-for="Input.RoomID" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.HotelID" class="control-label"></label>
+                                <input asp-for="Input.HotelID" class="form-control" />
+                                <span asp-validation-for="Input.HotelID" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.RoomNumber" class="control-label"></label>
+                                <input asp-for="Input.RoomNumber" class="form-control" />
+                                <span asp-validation-for="Input.RoomNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.RoomTypeId" class="control-label"></label>
+                                <input asp-for="Input.RoomTypeId" class="form-control" />
+                                <span asp-validation-for="Input.RoomTypeId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.BathRooms" class="control-label"></label>
+                                <input asp-for="Input.BathRooms" class="form-control" />
+                                <span asp-validation-for="Input.BathRooms" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.SquareFeet" class="control-label"></label>
+                                <input asp-for="Input.SquareFeet" class="form-control" />
+                                <span asp-validation-for="Input.SquareFeet" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.BasicCost" class="control-label"></label>
+                                <input asp-for="Input.BasicCost" class="form-control" />
+                                <span asp-validation-for="Input.BasicCost" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.AdditonalBeds" class="control-label"></label>
+                                <input asp-for="Input.AdditonalBeds" class="form-control" />
+                                <span asp-validation-for="Input.AdditonalBeds" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.AdditonalBedCost" class="control-label"></label>
+                                <input asp-for="Input.AdditonalBedCost" class="form-control" />
+                                <span asp-validation-for="Input.AdditonalBedCost" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="text-right">
+                            <button class="btn btn-sm btn-secondary" data-dismiss="modal"><i class="fas fa-close"></i> Close</button>
+                            <button class="btn btn-sm btn-success" data-save="modal"><i class="fas fa-save"></i> Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </form>
+</div>

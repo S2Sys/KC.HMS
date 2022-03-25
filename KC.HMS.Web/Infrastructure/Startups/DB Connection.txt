@@ -1,0 +1,21 @@
+        public async Task<IEnumerable<L2Downtime>> GetL2DowntimeAsync(L2DowntimeSearchRequest  l2DowntimeSearchRequest)
+        {
+            var parameter = new DynamicParameters();
+            parameter.Add("sortkey", l2DowntimeSearchRequest.SortKey);
+            parameter.Add("sortorder", l2DowntimeSearchRequest.SortOrder);
+            parameter.Add("deptname", l2DowntimeSearchRequest.DepartmentName);
+            var l2DowntimeList = await _dbConnection.QueryAsync<L2Downtime>("dt_fn_get_l2downtime", parameter, commandType: CommandType.StoredProcedure);
+            return l2DowntimeList;
+        }
+
+
+
+public class AbstractRepository
+    {
+        protected readonly IDbConnection _dbConnection;
+
+        protected AbstractRepository(IDbConnection dbConnection)
+        {
+            _dbConnection = dbConnection;
+        }
+    }

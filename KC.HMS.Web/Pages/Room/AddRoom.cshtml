@@ -1,0 +1,124 @@
+﻿@page
+@model KC.HMS.Web.Pages.Room.AddRoomModel
+@{
+    ViewData["Title"] = "Edit/Update Rooms";
+    //ViewBag.Types = Model.Lookups.Types;
+    //ViewBag.Hotels = Model.Lookups.Hotels;
+}
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="container-fluid margin-10">
+    <form class="g-8 navbar p-3 form-group" method="post" asp-page-handler="CreateRoom" 
+          autocomplete="off">
+        <div class="row">
+            <div class="col-md-12 s container-fluid p-3 pb-2">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Input.RoomID" />
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+
+                    <div class="row">
+                        <input type="hidden" asp-for="Input.RoomID" class="form-control" />
+                        <input type="hidden" asp-for="Input.RoomID" class="form-control" />
+                        <input type="hidden" asp-for="Input.RoomType" class="form-control" value="Single" />
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.HotelID" class="control-label"></label>
+
+                                <select asp-for="Input.HotelID" asp-items="Model.Hotel" class="form-control">
+                                </select>
+                                <span asp-validation-for="Input.HotelID" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.RoomNumber" class="control-label"></label>
+                                <input asp-for="Input.RoomNumber" class="form-control" />
+                                <span asp-validation-for="Input.RoomNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.RoomTypeId" class="control-label"></label>
+                                @*  <select asp-for="Input.RoomTypeId"
+                                    asp-items="@(new SelectList(Model.Lookups.Types, nameof(SelectListItem.Value), nameof(SelectListItem.Text)))">
+                                    <option>Please select one</option>
+                                    </select>*@
+                                <select asp-for="Input.RoomTypeId" asp-items="Model.Types" class="form-control">
+                                    <option value="0">Please select room type</option>
+                                </select>
+
+                                <span asp-validation-for="Input.RoomTypeId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.BathRooms" class="control-label"></label>
+                                <select asp-for="Input.BathRooms" class="form-select">
+
+                                    @for (int roomIndex = 1; roomIndex <= 2; roomIndex++)
+                                    {
+                                        <option>@roomIndex</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Input.BathRooms" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.SquareFeet" class="control-label"></label>
+                                <input asp-for="Input.SquareFeet" class="form-control" />
+                                <span asp-validation-for="Input.SquareFeet" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.BasicCost" class="control-label"></label>
+                                <input asp-for="Input.BasicCost" class="form-control" />
+                                <span asp-validation-for="Input.BasicCost" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.AdditonalBeds" class="control-label"></label>
+                                <select asp-for="Input.AdditonalBeds" class="form-select">
+
+                                    @for (int roomIndex = 1; roomIndex <= 2; roomIndex++)
+                                    {
+                                        <option>@roomIndex</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Input.AdditonalBeds" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ms-auto">
+                            <div class="form-group">
+                                <label asp-for="Input.AdditonalBedCost" class="control-label"></label>
+                                <input asp-for="Input.AdditonalBedCost" class="form-control" />
+                                <span asp-validation-for="Input.AdditonalBedCost" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div  >
+                            <a class="btn btn-dark" asp-page="/Room/Index"  ><i ></i> Back To Listing</a>
+                            <button class="btn btn-dark" > Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

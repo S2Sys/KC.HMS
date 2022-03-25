@@ -1,0 +1,58 @@
+﻿@page
+@model KC.HMS.Web.Pages.Room.IndexModel
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Manage Rooms";
+    int roomChecked = 0;
+}
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="container-fluid margin-10 ">
+
+    <div class="row">
+        @if (Model.Listing.Count > 0)
+        {
+            <div>
+                <table class="table table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().RoomNumber)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().RoomType)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().SquareFeet)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().BasicCost)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().BathRooms)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().AdditonalBeds)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().AdditonalBedCost)</th>
+                            <th>  <a asp-page="/Room/AddRoom" title="New Room" class="btn btn-sm btn-dark text-white">Add Room</a> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Listing)
+                        {
+                            <tr>
+                                <td>@item.RoomNumber</td>
+                                <td>@item.RoomType</td>
+                                <td>@item.SquareFeet</td>
+                                <td>@item.BasicCost</td>
+                                <td>@item.BathRooms</td>
+                                <td>@item.AdditonalBeds</td>
+                                <td>@item.AdditonalBedCost</td>
+                                <td>
+                                    <a asp-page="/Room/AddRoom" class="btn btn-sm btn-dark text-white" title="Edit Room" asp-route-id="@item.RoomID" asp-route-foo="bar">Edit Room</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        }
+        else
+        {
+             <div class="alert alert-info">Sorry no rooms are created yet, you can create first one by clicking the add room link </div>
+             <a asp-page="/Room/UpsertRoom" class="btn btn-sm btn-dark text-white"  title="New Room">Add Room</a> 
+        }
+    </div>
+
+</div>

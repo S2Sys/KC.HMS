@@ -1,0 +1,78 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<IdentityRole> roleManager
+
+<header>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary gradient-bg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">GS Residency</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            Home
+                            <span class="visually-hidden">(current)</span>
+                        </a>
+                    </li>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        var user = await UserManager.GetUserAsync(User);
+                        //var user = await UserManager.FindByNameAsync(user.UserName);
+                        var userRoles = await UserManager.GetRolesAsync(user);
+                        @if (userRoles.Any())
+                        {
+                            <li class="nav-item dropdown">
+
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">My Booking</a>
+                                <div class="dropdown-menu">
+                                    @if (userRoles.Any(i => i == RoleKind.Administrator.ToString()))
+                                    {
+
+                                        <a class="dropdown-item" asp-page="/Dashboard">Dashboard</a>
+                                        <a class="dropdown-item" asp-page="/MyBooking">Booking History</a>
+                                        <a class="dropdown-item" asp-page="/Room/Index" title="Manage Rooms">Manage Rooms</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-area="Administration" asp-page="/RoleIndex" title="Manage RoleIndex">Manage Roles</a>
+                                        <a class="dropdown-item" asp-area="Administration" asp-page="/Users" title="Manage RoleIndex">Manage Users</a>
+
+
+                                    }
+                                    else @if (userRoles.Any(i => i == RoleKind.Guest.ToString()))
+                                    {
+                                        <a class="dropdown-item" asp-page="/MyBooking">My Booking</a>
+
+                                    }
+
+                                </div>
+                            </li>
+                        }
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Search" title="Search Rooms">Check Availablity</a>
+                    </li>
+                    @* <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="#">Pricing</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                        </li>*@
+                </ul>
+                <form class="d-flex">
+                    <partial name="_LoginPartial" />
+                    @*<input class="form-control me-sm-2" type="text" placeholder="Search">
+                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>*@
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>

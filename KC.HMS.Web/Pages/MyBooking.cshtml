@@ -1,0 +1,78 @@
+﻿@page
+@model KC.HMS.Web.Pages.MyBookingModel
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="container-fluid margin-10 p-3">
+    <div class="row margin-10 p-3">
+        <div class="col-md-9"></div>
+        <div class="col-md-3 align-content-end">
+            <div class="btn-group " role="group" aria-label="Basic example">
+                <a class="btn btn-primary success asp-page="./MyBooking" asp-route-showStatus="@BookingStatusKind.All">All</a>
+                <a class="btn btn-primary" asp-page="./MyBooking" asp-route-referenceId="@Guid.Empty" asp-route-showStatus="@BookingStatusKind.Confirmed">Confirmed</a>
+                <a class="btn btn-primary" asp-page="./MyBooking" asp-route-referenceId="@Guid.Empty" asp-route-showStatus="@BookingStatusKind.Cancelled">Cancelled</a>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="row">
+        @if (Model.Listing.Count > 0)
+        {
+
+            <div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().RoomNumber)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().CheckIn)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().CheckOut)</th>
+                            <th>Days</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().TotalCost)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().Paid)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().CustomerName)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().CustomerPhone)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().Created)</th>
+                            <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().BookingStatus)</th>
+                            <th>  </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Listing)
+                        {
+                            <tr>
+
+                                <td><p class="BookingStatus @item.BookingStatus">@item.RoomNumber</p></td>
+                                <td>@item.CheckIn.ToShortDateString()</td>
+                                <td>@item.CheckOut.ToShortDateString()</td>
+                                <td>@(Math.Round((item.CheckOut.AddSeconds(-2) - item.CheckIn).TotalDays,0, MidpointRounding.AwayFromZero))</td>
+                                <td>@item.TotalCost</td>
+                                <td>@item.Paid</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.CustomerPhone</td>
+
+                                <td>@item.Created</td>
+                                <td>@item.BookingStatus</td>
+                                <td>
+                                    @if (item.BookingStatus == BookingStatusKind.Confirmed)
+                                    {
+                                        <a class="btn btn-dark btn-sm delBtn" confirm="Are your sure to cancel the booking?" asp-page="./MyBooking" asp-page-handler="CancelBooking" asp-route-id="@item.BookingId">Cancel</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div>No Booking found</div>
+        }
+
+    </div>
+</div>

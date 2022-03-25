@@ -1,0 +1,164 @@
+﻿@page
+@model KC.HMS.Web.Pages.SearchModel
+@inject UserManager<ApplicationUser> UserManager
+@{
+    int roomChecked = 0;
+}
+<div class="container-fluid margin-10">
+    <form class="g-3 navbar navbar-expand-lg navbar-light bg-light" method="post"
+          asp-page-handler="CheckAvailablity" autocomplete="off">
+        <div class="row">
+            <div class="col-md-9">
+                <H3>Find your next stay</H3>
+                <input type="hidden" class="form-control datepicker" asp-for="Input.TotalRooms">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <input type="hidden" asp-for="Input.Phone" class="form-control" />
+                <input type="hidden" asp-for="Input.RoomsSelected" class="form-control" />
+                <input type="hidden" asp-for="Input.Email" class="form-control" />
+                <input type="hidden" asp-for="Input.Name" class="form-control" />
+
+                <label asp-for="Input.CheckIn" class="form-label"></label>
+                <input type="text" class="form-control datepicker" asp-for="Input.CheckIn">
+
+                <span asp-validation-for="Input.CheckIn" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Input.CheckOutDate" class="form-label"></label>
+                <input type="text" class="form-control datepicker" asp-for="Input.CheckOutDate">
+
+                <span asp-validation-for="Input.CheckOutDate" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Input.RoomCount" class="form-label"></label>
+                <select asp-for="Input.RoomCount" class="form-select">
+
+                    @for (int roomIndex = 1; roomIndex <= @Model.Input.TotalRooms; roomIndex++)
+                    {
+                        <option>@roomIndex</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <button type="submit" class="btn btn-dark">Check Availablity</button>
+            </div>
+        </div>
+    </form>
+
+    @if (Model.Listing.Count > 0)
+    {
+
+        var user = await UserManager.GetUserAsync(User);
+        if (user != null)
+        {
+
+            Model.Input.Email = user.Email;
+            Model.Input.Name = user.FirstName + " " + user.LastName;
+            Model.Input.Phone = user.PhoneNumber;
+
+        }
+        else
+        {
+            Model.Input.Email = String.Empty;
+            Model.Input.Name = String.Empty;
+            Model.Input.Phone = String.Empty;
+        }
+
+        <div>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Room Number</th>
+                        <th>Room Type</th>
+                        <th>Square Feet</th>
+                        <th>Basic Cost</th>
+                        <th>Bath Rooms</th>
+                        <th>Additonal Bed Cost</th>
+                        <th>
+                            Customize ur choice
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.Listing)
+                    {
+                        roomChecked++;
+
+                        <tr>
+
+                            <td>@item.RoomNumber</td>
+                            <td>@item.RoomType</td>
+                            <td>@item.SquareFeet</td>
+                            <td>@item.BasicCost</td>
+                            <td>@item.BathRooms</td>
+                            <td>@item.AdditonalBedCost</td>
+                            <td>
+                                @if (roomChecked <= @Model.Input.RoomCount)
+                                {
+                                    <input type="checkbox" name="checkRoom" class="checkRoom" value="@item.RoomNumber" checked="checked" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="checkRoom" class="checkRoom" value="@item.RoomNumber" />
+                                }
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="7">
+                            <form class="g-3 navbar navbar-expand-lg navbar-light bg-light" method="post"
+                              asp-page-handler="BookMyRooms" autocomplete="off">
+                                <div class="row align-items-center g-3">
+                                    <div class="col-auto">
+                                        <input type="hidden" asp-for="Input.RoomsSelected" class="form-control RoomsSelected" />
+
+                                        <input type="hidden" asp-for="Input.Phone" class="form-control" />
+                                        <input type="hidden" asp-for="Input.CheckIn" class="form-control" />
+                                        <input type="hidden" asp-for="Input.CheckOutDate" class="form-control" />
+                                        <input type="hidden" asp-for="Input.RoomCount" class="form-control RoomCount" />
+                                        <input type="hidden" asp-for="Input.TotalRooms" class="form-control" />
+
+                                        <label asp-for="Input.Name"></label>
+                                        <input asp-for="Input.Name" class="form-control" />
+                                        <span asp-validation-for="Input.Name" placeholder="Your Name" class="form-control"></span>
+
+
+                                    </div>
+                                    <div class="col-auto">
+                                        <label asp-for="Input.Email"></label>
+                                        <input asp-for="Input.Email" class="form-control" />
+                                        <span asp-validation-for="Input.Email" placeholder="Your Email" class="form-control"></span>
+
+                                    </div>
+                                    <div class="col-auto">
+                                        <label asp-for="Input.Phone"></label>
+                                        <input asp-for="Input.Phone" class="form-control" />
+                                        <span asp-validation-for="Input.Phone" placeholder="Your Phone" class="form-control"></span>
+
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-dark disabled btnBookMyRoom">Book My Room</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </th>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+    }
+</div>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

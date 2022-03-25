@@ -1,0 +1,35 @@
+﻿@page
+@model RoleIndexModel
+@{
+}
+<h3>Manage Role</h3>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="container-fluid margin-10 p-3">
+    <div class="row">
+        <form method="post" asp-page="/RoleIndex">
+            <div class="input-group">
+                <input asp-for="Input.RoleName" class="form-control w-25" autocomplete="rolename" aria-required="true" />
+                <span class="input-group-btn">
+                    <button class="btn btn-sm btn-success text-white">Create Role</button>
+                </span>
+            </div>
+        </form>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var role in Model.Listing)
+                {
+                    <tr>
+                        <td>@role.Id</td>
+                        <td>@role.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

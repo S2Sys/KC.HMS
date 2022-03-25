@@ -1,0 +1,39 @@
+﻿@model KC.HMS.Web.Pages.IndexModel.SearchDto;
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<div class="container-fluid margin-10">
+    <form class="g-3 navbar navbar-expand-lg navbar-light bg-light" method="post" asp-page="Index" 
+    asp-page-handler="CheckAvailablity">
+        <div class="row">
+            <H3>Find your next stay</H3>
+            <input type="hidden" class="form-control datepicker" asp-for="@Model.NumberOfRooms">
+        </div>
+        <div class="row">
+            <div class="col-md-3 m-2">
+                <label asp-for="@Model.CheckIn" class="form-label"></label>
+                <input type="text" class="form-control datepicker" asp-for="@Model.CheckIn">
+            </div>
+            <div class="col-md-3 m-2">
+                <label asp-for="@Model.CheckOutDate" class="form-label"></label>
+                <input type="text" class="form-control datepicker" asp-for="@Model.CheckOutDate">
+            </div>
+            <div class="col-md-3 m-2">
+                <label asp-for="@Model.RequestedRooms" class="form-label"></label>
+                <select asp-for="@Model.RequestedRooms" class="form-select">
+                    <option selected>Choose...</option>
+                    @for (int roomIndex = 1; roomIndex <= @Model.NumberOfRooms; roomIndex++)
+                    {   
+                        <option>@roomIndex</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3 m-2">
+                <label for="submit" class="form-label"></label>
+                <button type="submit" class="btn btn-dark">Check Availablity</button>
+            </div>
+        </div>
+    </form>
+</div>

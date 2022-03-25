@@ -1,0 +1,249 @@
+<#@ template language="C#" hostspecific="true" debug="True" #>
+<#@ assembly name="System" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.IO" #>
+<#@ assembly name="System.Configuration" #>
+<#@ assembly name="Microsoft.SqlServer.Smo" #>
+<#@ assembly name="Microsoft.SqlServer.ConnectionInfo" #>
+<#@ assembly name="Microsoft.SqlServer.Management.Sdk.Sfc" #>
+<#@ assembly name="Humanizer" #> 
+
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Configuration" #>
+<#@ import namespace="Microsoft.SqlServer.Management.Smo" #>
+<#@ import namespace="Microsoft.SqlServer.Management.Common" #>
+
+<#@ import namespace="Humanizer" #> 
+ 
+
+<#
+    //****************************
+    // DEFINE YOUR VARIABLES HERE
+    //****************************
+    // The SQL Coonection String name  
+    string connectionStringKey = "Default";
+    // The namespace to apply to the generated classes
+    string classNamespace = "KC.HMS.Core.Models";
+    // The destination folder for the generated classes, relative to this file's location.
+    string destinationFolder = "DTO";
+    string auditColumns ="CreatedBy;CreatedOn;UpdatedBy;UpdatedOn";
+    string auditBase="BaseAudit";
+    // Loop over each table table and create a class file!
+    /*
+    string appConfig = this.Host.ResolvePath("App.config");
+    if(!File.Exists(appConfig))
+    {
+	    Error("App.config not exists");
+    }
+
+    ExeConfigurationFileMap configFile = new ExeConfigurationFileMap();
+    configFile.ExeConfigFilename = appConfig;
+    var configuration = ConfigurationManager.OpenMappedExeConfiguration(configFile, ConfigurationUserLevel.None);
+    var connectionString = configuration.ConnectionStrings.ConnectionStrings[connectionStringKey].ConnectionString;
+    */
+
+    var singularName ="";
+
+    var connectionString = "Server=STR55500U\\SIS;Database=HMS;User Id=sa;Password=Enter321;MultipleActiveResultSets=true;";
+    SqlConnection sqlConnection = new SqlConnection(connectionString);
+    ServerConnection serverConnection = new ServerConnection(sqlConnection);
+    Server server = new Server(serverConnection);
+
+    var db = server.Databases[server.ConnectionContext.DatabaseName];
+
+    foreach (Table table in server.Databases[server.ConnectionContext.DatabaseName].Tables)
+    {
+        // Skip sys tables
+        if (table.Name.StartsWith("sys") || table.Name == "__EFMigrationsHistory"  || table.Name== "Roles"  || table.Name == "RoleClaims"
+          || table.Name == "Users"  || table.Name == "RefreshToken" || table.Name == "UserClaims"|| table.Name == "UserLogins"  || table.Name == "UserRoles"|| table.Name == "UserTokens")
+        {
+            continue;
+        }
+        
+       string auditInherit = string.Empty ;
+
+       var hasAuditColumns =  HasAuditColumns(table,auditColumns);
+
+       if(hasAuditColumns)
+        auditInherit = ": "+ auditBase;
+
+       singularName = table.Name.Singularize();
+#>
+using System;
+using System.ComponentModel.DataAnnotations;
+namespace <#= classNamespace #>.<#= table.Schema #>
+{
+    /// <summary>
+    /// Represents a <#= table.Name #> entity.
+    /// NOTE: This class is used to keep <#= table.Name #> information.
+    /// </summary>
+    public partial class <#= singularName #> <#= auditInherit #> 
+    {
+        <# 
+            // Keep count so we don't whitespace the last property/column
+            int columnCount = table.Columns.Count;
+            int i = 0;
+        #>
+#region Constructor
+
+#endregion Constructor
+
+#region Properties
+        <#
+        // Iterate all columns
+        foreach (Column col in table.Columns)
+        {
+            i++;
+            string propertyType = GetNetDataType(col.DataType.Name);
+            int maxLength = col.DataType.MaximumLength ;
+            string annotation = string.Empty ;
+            
+            if(col.InPrimaryKey)
+                annotation += "[Key]\n";
+
+           annotation += ("[Display(Name = \""+ singularName +"."+ col.Name +"\")");
+
+            //annotation += "[LocalizedResource("+ col.Name +" Field."+ col.Name +")]\n";
+            if(!col.Nullable && !col.InPrimaryKey)
+            {
+                //annotation += "[Required(ErrorMessage = \"{0} is required\")]\n";
+                annotation += (", Required( ErrorMessage = \"ErrorMessageRequired\")");
+            }
+            if(propertyType == "string")
+            {
+                //annotation += $"[StringLength("+ maxLength +", ErrorMessage = \"The {0} value cannot exceed {1} characters.\")]\n";
+               annotation += (",StringLength("+ maxLength +", ErrorMessage = \"ErrorMessageStringLength\")");
+            } 
+
+            annotation += "]";
+            //string maxLengthAnnotation= $"[StringLength("+ maxLength +", ErrorMessage = \"The {0} value cannot exceed {1} characters.\")]";
+
+            // If we can't map it, skip it
+            if (string.IsNullOrWhiteSpace(propertyType) || SkipColumn(col,auditColumns )== true )
+            {
+                // Skip
+                continue;
+            }
+
+            // Handle nullable columns by making the type nullable
+            if (col.Nullable && propertyType != "string")
+            {
+                propertyType += "?";
+            }
+ 
+        #>
+        <#if(!string.IsNullOrEmpty(annotation)){ #>
+             <#= annotation #> 
+        <#} #>
+public <#= propertyType #> <#= col.Name #> { get; set; }
+<#
+            // Do we insert the space?
+            if (i != columnCount)
+            {
+#>
+
+<#
+            }
+#>
+<#
+        }
+#>
+        #endregion Properties
+
+    }
+
+    
+}      
+<#
+        // Write new POCO class to its own file
+        SaveOutput(singularName + ".cs", destinationFolder);
+    } 
+#>
+<#+
+    
+     public static bool SkipColumn(Column col, string columns)
+    {
+      var splliter =new Char [] {' ', ',', '.', ';', '\n', '\t' };
+      var auditColumns = columns.Split(splliter);
+      int i = 0;
+      
+      return (auditColumns.Contains(col.Name)); 
+    }
+
+    public static bool HasAuditColumns(Table table,string columns)
+    {
+        var splliter =new Char [] {' ', ',', '.', ';', '\n', '\t' };
+       var auditColumns = columns.Split(splliter);
+      int i = 0;
+      foreach (Column col in table.Columns)
+      {
+        if(auditColumns.Contains(col.Name))
+            i++;
+      }
+
+      return (i == auditColumns.Count() )? true: false;
+    }
+
+    public static string GetNetDataType(string sqlDataTypeName)
+    {
+        switch (sqlDataTypeName.ToLower())
+        {
+            case "bigint":
+                return "Int64";
+            case "binary":
+            case "image":
+            case "varbinary":
+                return "byte[]";
+            case "bit":
+                return "bool";
+            case "char":
+                return "char";
+            case "datetime":
+            case "smalldatetime":
+                return "DateTime";
+            case "decimal":
+            case "money":
+            case "numeric":
+                return "decimal";
+            case "float":
+                return "double";
+            case "int":
+                return "int";
+            case "nchar":
+            case "nvarchar":
+            case "text":
+            case "varchar":
+            case "xml":
+                return "string";
+            case "real":
+                return "single";
+            case "smallint":
+                return "Int16";
+            case "tinyint":
+                return "byte";
+            case "uniqueidentifier":
+                return "Guid";
+            default:
+                return null;
+        }
+    }
+
+    void SaveOutput(string outputFileName, string destinationFolder)
+    {
+        // Write to destination folder
+        string templateDirectory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), destinationFolder);
+        string outputFilePath = Path.Combine(templateDirectory, outputFileName);
+        File.Delete(outputFilePath);
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+
+        // Flush generation
+        this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+    }
+#>

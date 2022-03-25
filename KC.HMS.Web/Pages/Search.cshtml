@@ -1,0 +1,163 @@
+﻿@page
+@model KC.HMS.Web.Pages.SearchModel
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Check Availablity & Book Rooms";
+    int roomChecked = 0;
+}
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="container-fluid pt-3 pb-2">
+    <form class="g-8 navbar navbar-expand-lg navbar-light bg-light form-bg p-3" method="post"
+          asp-page-handler="CheckAvailablity" autocomplete="off">
+        <div class="row">
+            <div class="col-md-12">
+                <input type="hidden" class="form-control datepicker" asp-for="SearchInput.TotalRooms">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <label asp-for="SearchInput.CheckIn" class="form-label"></label>
+                <input type="text" class="form-control datepicker" asp-for="SearchInput.CheckIn">
+
+                <span asp-validation-for="SearchInput.CheckIn" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="SearchInput.CheckOutDate" class="form-label"></label>
+                <input type="text" class="form-control datepicker" asp-for="SearchInput.CheckOutDate">
+
+                <span asp-validation-for="SearchInput.CheckOutDate" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="SearchInput.RoomCount" class="form-label"></label>
+                <select asp-for="SearchInput.RoomCount" class="form-select">
+
+                    @for (int roomIndex = 1; roomIndex <= @Model.SearchInput.TotalRooms; roomIndex++)
+                    {
+                        <option>@roomIndex</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <button type="submit" class="btn btn-dark">Check Availablity</button>
+            </div>
+        </div>
+    </form>
+    @if (Model.Listing != null)
+    {
+        <div class="row">
+            @if (Model.Listing.Count > 0 && Model.Listing.Count >= Model.SearchInput.RoomCount)
+            {
+                <div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().RoomNumber)</th>
+                                <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().RoomType)</th>
+                                <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().SquareFeet)</th>
+                                <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().BasicCost)</th>
+                                <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().BathRooms)</th>
+                                <th>@Html.DisplayNameFor(m => m.Listing.FirstOrDefault().AdditonalBedCost)</th>
+                                <th>
+                                    Customize ur choice
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.Listing)
+                            {
+                                roomChecked++;
+
+                                <tr>
+
+                                    <td>@item.RoomNumber</td>
+                                    <td>@item.RoomType</td>
+                                    <td>@item.SquareFeet</td>
+                                    <td>@item.BasicCost</td>
+                                    <td>@item.BathRooms</td>
+                                    <td>@item.AdditonalBedCost</td>
+                                    <td>
+                                        @if (roomChecked <= @Model.SearchInput.RoomCount)
+                                        {
+                                            <input type="checkbox" name="checkRoom" class="checkRoom" value="@item.RoomNumber" checked="checked" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="checkRoom" class="checkRoom" value="@item.RoomNumber" />
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="7">
+                                    <form class="g-3 navbar navbar-expand-lg navbar-light bg-light form-bg p-3" method="post"
+                                  asp-page-handler="BookMyRooms" autocomplete="off">
+                                        <div class="row align-items-center g-3">
+                                            <div class="col-auto">
+                                                <input type="hidden" asp-for="BookInput.RoomsSelected" class="form-control RoomsSelected" />
+
+
+                                                <input type="hidden" asp-for="BookInput.CheckIn" class="form-control" />
+                                                <input type="hidden" asp-for="BookInput.CheckOutDate" class="form-control" />
+                                                <input type="hidden" asp-for="BookInput.RoomCount" class="form-control RoomCount" />
+                                                <input type="hidden" asp-for="BookInput.RoomCount" class="form-control" />
+                                                <input type="hidden" asp-for="BookInput.UserId" class="form-control" />
+                                                <label asp-for="BookInput.Name"></label>
+                                                <input asp-for="BookInput.Name" class="form-control" />
+                                                <span asp-validation-for="BookInput.Name" placeholder="Your Name" class="text-danger"></span>
+
+
+                                            </div>
+                                            <div class="col-auto">
+                                                <label asp-for="BookInput.Email"></label>
+                                                <input asp-for="BookInput.Email" class="form-control" />
+                                                <span asp-validation-for="BookInput.Email" placeholder="Your Email" class="text-danger"></span>
+
+                                            </div>
+                                            <div class="col-auto">
+                                                <label asp-for="BookInput.Phone"></label>
+                                                <input asp-for="BookInput.Phone" class="form-control" />
+                                                <span asp-validation-for="BookInput.Phone" placeholder="Your Phone" class="text-danger"></span>
+
+                                            </div>
+                                            <div class="col-auto">
+
+                                                <label>
+                                                    <input type="checkbox" asp-for="BookInput.OptForAdditionalBed" value="true" checked />
+                                                    @Html.DisplayNameFor(m => m.BookInput.OptForAdditionalBed)
+                                                </label>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                <button type="submit" class="btn btn-dark disabled btnBookMyRoom">Book My Room</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </th>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+                </div>
+            }
+            else if (Model.Listing.Count < Model.SearchInput.RoomCount)
+            {
+                <div class="alert alert-danger">Required count of rooms are not available in the selected date, Kindly check with other dates </div>
+            }
+            else
+            {
+                <div class="alert alert-info">Sorry no rooms are not available in the selected date, Kindly check with other dates </div>
+            }
+        </div>
+    }
+</div>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

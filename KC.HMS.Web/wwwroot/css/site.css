@@ -1,0 +1,146 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.carousel .carousel-item {
+    height: 300px;
+}
+
+.carousel-item img {
+    position: absolute;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    min-height: 300px;
+}
+
+/*h1{ font-size:20px; }
+h2 {
+    font-size: 18px;
+}
+h3 {
+    font-size: 16px;
+}
+h4 {
+    font-size: 14px;
+}
+h5,h6 {
+    font-size: 12px;
+}
+
+.margin-10{ padding:10px; margin:5px solid #ccc;}*/
+
+footer {
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.fixed-bottom {
+    position: fixed;
+    height: 40px;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.input-validation-error, .input-validation-error:focus {
+    border: 1px solid #ff0000;
+    box-shadow: inset 0px 0px 3px #ff0000;
+    color: Transparent;
+    background-size: 16px 16px;
+}
+
+.text-danger {
+    color: #ff0000;
+}
+
+.gradient-bg, .btn-dark {
+    background: rgb(12,49,50);
+    background: radial-gradient(circle, rgba(12,49,50,1) 0%, rgba(44,61,153,1) 100%);
+}
+
+footer p {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.form-bg {
+    background: #ccc;
+    background: linear-gradient(0deg, rgba(194,194,195,1) 0%, rgba(230,233,249,0.919502835313813) 100%);
+    border-radius: 6px;
+    border: 2px solid #bbb;
+}
+
+
+.type-tile {
+    background: #fff;
+    border-radius: 16px;
+    border: 2px solid #293C90;
+    color: #293C90;
+}
+
+th, h1, h2, h3 {
+    color: #293C90;
+}
+
+th {
+    border-top: 1px solid #293C90;
+    border-bottom: 1px solid #ccc;
+}
+
+.feature-list {
+    columns: 3;
+    -webkit-columns: 3;
+    -moz-columns: 3;
+    padding: 2pt;
+    font-size: 20px;
+    width: 100%;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-top: 1px solid #ccc;
+    float: left;
+}
+
+li {
+    line-height: 3em;
+}
+
+.BookingStatus {
+    color: white;
+    font-weight: 400;
+    text-align: center;
+    border-radius: 4px;
+}
+.Deleted {
+    color: red;
+    background-color: red;
+}
+.Cancelled {
+    background-color: darkgray; 
+}
+.Confirmed, .CheckedIn {
+    background-color: green;
+    
+}
+
+.table-striped tr th {
+    align-content: center;
+    text-align:center;
+}
