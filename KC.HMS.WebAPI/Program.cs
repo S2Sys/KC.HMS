@@ -35,7 +35,7 @@ builder.Services.AddTransient<IDbConnection>((sp) => new SqlConnection(connectio
 
 DapperDb.Initialize(new SqlConnection(connectionString), builder.Configuration);
 
-var h = DapperDb.Query<HotelDto>("GetHotel", CommandType.StoredProcedure, null);
+//var h = DapperDb.Query<HotelDto>("GetHotel", CommandType.StoredProcedure, null);
 
 
 #region Inject Services 
@@ -56,6 +56,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 #endregion
 
+var cs = builder.Configuration.GetConnectionString("DefaultConnection");
 //Adding DB Context with MSSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
